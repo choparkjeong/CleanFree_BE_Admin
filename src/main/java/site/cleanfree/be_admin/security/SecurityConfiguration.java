@@ -3,6 +3,7 @@ package site.cleanfree.be_admin.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -47,6 +48,7 @@ public class SecurityConfiguration {
                                 // 허용 범위
                                 .requestMatchers("https://cleanfree.store", "/api/v1/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/health-check")
                                 .permitAll()
+                                .requestMatchers(HttpMethod.POST, "/reservation-1").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )

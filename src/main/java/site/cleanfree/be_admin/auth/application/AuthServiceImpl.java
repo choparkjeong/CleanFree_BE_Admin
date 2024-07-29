@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import site.cleanfree.be_admin.auth.domain.Admin;
 import site.cleanfree.be_admin.auth.dto.AdminSignupDto;
 import site.cleanfree.be_admin.auth.infrastructure.AdminRepository;
+import site.cleanfree.be_admin.common.UuidProvider;
 
 @Service
 @RequiredArgsConstructor
@@ -20,12 +21,14 @@ public class AuthServiceImpl implements AuthService {
         Admin admin = Admin.builder()
                 .adminId(adminSignupRequestDto.getId())
                 .adminPw(hashPassword(adminSignupRequestDto.getPw()))
+                .adminUuid(UuidProvider.generateAdminUuid())
                 .build();
         adminRepository.save(admin);
 
         return AdminSignupDto.builder()
                 .id(admin.getAdminId())
                 .pw(admin.getAdminPw())
+                .adminUuid(admin.getAdminUuid())
                 .build();
     }
 

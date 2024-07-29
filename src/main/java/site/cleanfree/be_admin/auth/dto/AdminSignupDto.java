@@ -10,4 +10,5 @@ import lombok.*;
 public class AdminSignupDto {
     private String id;
     private String pw;
+    private String adminUuid;
 }

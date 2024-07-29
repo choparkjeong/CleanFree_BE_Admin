@@ -23,13 +23,13 @@ public class Admin extends BaseCreateTimeEntity {
     @Column(name = "admin_pw", nullable = false)
     private String adminPw;
 
-//    @Column(name = "admin_uuid", nullable = false)
-//    private String adminUuid;
+    @Column(name = "admin_uuid", nullable = false)
+    private String adminUuid;
 
     @Builder
-    public Admin(String adminId, String adminPw) {
+    public Admin(String adminId, String adminPw, String adminUuid) {
         this.adminId = adminId;
         this.adminPw = adminPw;
-//        this.adminUuid = adminUuid;
+        this.adminUuid = adminUuid;
     }
 }

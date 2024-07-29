@@ -30,4 +30,19 @@ public class UuidProvider {
         }
         return sb.toString();
     }
+
+    public static String generateAdminUuid() {
+        final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(11);
+        sb.append("admin");
+
+        for (int i = 0; i < 3; i++) {
+            sb.append(random.nextInt(10));
+        }
+        for (int i = 0; i < 3; i++) {
+            sb.append(ALPHABET.charAt(random.nextInt(ALPHABET.length())));
+        }
+        return sb.toString();
+    }
 }
