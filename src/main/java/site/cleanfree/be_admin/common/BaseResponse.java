@@ -9,12 +9,12 @@ import site.cleanfree.be_admin.common.exception.ErrorStatus;
 public class BaseResponse<T> {
 
     private final boolean success;
-    private final int errorCode;
+    private final Integer errorCode;
     private final String message;
     private final T data;
 
     @Builder
-    public BaseResponse(boolean success, int errorCode, String message, T data) {
+    public BaseResponse(boolean success, Integer errorCode, String message, T data) {
         this.success = success;
         this.errorCode = errorCode;
         this.message = message;
@@ -24,7 +24,7 @@ public class BaseResponse<T> {
     public static <T> BaseResponse<T> successResponse(String message, T data) {
         return BaseResponse.<T>builder()
                 .success(true)
-                .errorCode(ErrorStatus.SUCCESS.getCode())
+                .errorCode(null)
                 .message(message)
                 .data(data)
                 .build();
@@ -33,7 +33,7 @@ public class BaseResponse<T> {
     public static <T> BaseResponse<T> successResponse(String message) {
         return BaseResponse.<T>builder()
                 .success(true)
-                .errorCode(ErrorStatus.SUCCESS.getCode())
+                .errorCode(null)
                 .message(message)
                 .data(null)
                 .build();
