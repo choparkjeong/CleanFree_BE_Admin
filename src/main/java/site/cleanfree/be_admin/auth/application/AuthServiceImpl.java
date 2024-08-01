@@ -4,8 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import site.cleanfree.be_admin.auth.data.vo.AdminSignupRequestVo;
 import site.cleanfree.be_admin.auth.domain.Admin;
-import site.cleanfree.be_admin.auth.dto.AdminSignupDto;
+import site.cleanfree.be_admin.auth.data.dto.AdminSignupDto;
 import site.cleanfree.be_admin.auth.infrastructure.AdminRepository;
 import site.cleanfree.be_admin.common.UuidProvider;
 
@@ -16,11 +17,11 @@ public class AuthServiceImpl implements AuthService {
     private final AdminRepository adminRepository;
 
     @Override
-    public AdminSignupDto signup(AdminSignupDto adminSignupRequestDto) {
+    public AdminSignupDto signup(AdminSignupRequestVo adminSignupRequestVo) {
         // pw 암호화해서 저장
         Admin admin = Admin.builder()
-                .adminId(adminSignupRequestDto.getId())
-                .adminPw(hashPassword(adminSignupRequestDto.getPw()))
+                .adminId(adminSignupRequestVo.getId())
+                .adminPw(hashPassword(adminSignupRequestVo.getPw()))
                 .adminUuid(UuidProvider.generateAdminUuid())
                 .build();
         adminRepository.save(admin);

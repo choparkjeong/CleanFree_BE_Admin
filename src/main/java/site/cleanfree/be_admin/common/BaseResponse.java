@@ -28,4 +28,13 @@ public class BaseResponse<T> {
                 .data(data)
                 .build();
     }
+
+    public static <T> BaseResponse<T> successResponse(String message) {
+        return BaseResponse.<T>builder()
+                .success(true)
+                .errorCode(ErrorStatus.SUCCESS.getCode())
+                .message(message)
+                .data(null)
+                .build();
+    }
 }

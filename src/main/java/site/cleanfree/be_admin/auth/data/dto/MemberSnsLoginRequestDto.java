@@ -1,4 +1,4 @@
-package site.cleanfree.be_admin.auth.dto;
+package site.cleanfree.be_admin.auth.data.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

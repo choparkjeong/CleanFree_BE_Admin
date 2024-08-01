@@ -1,8 +1,9 @@
 package site.cleanfree.be_admin.auth.application;
 
 
-import site.cleanfree.be_admin.auth.dto.AdminSignupDto;
+import site.cleanfree.be_admin.auth.data.dto.AdminSignupDto;
+import site.cleanfree.be_admin.auth.data.vo.AdminSignupRequestVo;
 
 public interface AuthService {
-    AdminSignupDto signup(AdminSignupDto adminSignupRequestDto);
+    AdminSignupDto signup(AdminSignupRequestVo adminSignupRequestVo);
 }

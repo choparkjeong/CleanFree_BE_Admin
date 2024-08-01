@@ -1,10 +1,7 @@
-package site.cleanfree.be_admin.auth.dto;
+package site.cleanfree.be_admin.auth.data.dto;
 
 import lombok.*;
 
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 @ToString
 public class AdminSignupDto {
