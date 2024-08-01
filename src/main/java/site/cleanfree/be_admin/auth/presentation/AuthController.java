@@ -24,7 +24,7 @@ public class AuthController {
     @PostMapping("/signUp")
     @Operation(summary = "회원가입 API", description = "회원가입 API")
     public ResponseEntity<BaseResponse<Object>> signup(
-//            @RequestHeader String Authorization,
+            @RequestHeader String Authorization,
             @RequestBody AdminSignUpRequestVo adminSignUpRequestVo) {
 
         AdminSignUpDto adminSignupDto = authService.signUp(adminSignUpRequestVo);
