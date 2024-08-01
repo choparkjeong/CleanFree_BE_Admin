@@ -17,13 +17,13 @@ public class Admin extends BaseCreateTimeEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(name = "admin_id", nullable = false)
+    @Column(name = "admin_id", nullable = false, unique = true)
     private String adminId;
 
     @Column(name = "admin_pw", nullable = false)
     private String adminPw;
 
-    @Column(name = "admin_uuid", nullable = false)
+    @Column(name = "admin_uuid", nullable = false, unique = true)
     private String adminUuid;
 
     @Builder

@@ -46,8 +46,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                         authorizeHttpRequests -> authorizeHttpRequests
                                 // 허용 범위
-                                .requestMatchers("https://cleanfree.store", "/api/v1/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/health-check")
-                                .permitAll()
+                                .requestMatchers("https://cleanfree.store", "/api/v1/auth/signIn", "/swagger-ui/**", "/v3/api-docs/**", "/health-check").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )

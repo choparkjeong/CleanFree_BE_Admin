@@ -2,6 +2,7 @@ package site.cleanfree.be_admin.common;
 
 import lombok.Builder;
 import lombok.Getter;
+import site.cleanfree.be_admin.common.exception.ErrorMessage;
 import site.cleanfree.be_admin.common.exception.ErrorStatus;
 
 @Getter
@@ -34,6 +35,15 @@ public class BaseResponse<T> {
                 .success(true)
                 .errorCode(ErrorStatus.SUCCESS.getCode())
                 .message(message)
+                .data(null)
+                .build();
+    }
+
+    public static <T> BaseResponse<T> failResponse(ErrorMessage errorMessage, ErrorStatus errorStatus) {
+        return BaseResponse.<T>builder()
+                .success(false)
+                .errorCode(errorStatus.getCode())
+                .message(errorMessage.getMessage())
                 .data(null)
                 .build();
     }

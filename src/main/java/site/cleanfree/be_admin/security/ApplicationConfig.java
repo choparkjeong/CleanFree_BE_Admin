@@ -7,11 +7,16 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import site.cleanfree.be_admin.auth.infrastructure.AdminRepository;
+import site.cleanfree.be_admin.common.exception.CustomException;
+import site.cleanfree.be_admin.common.exception.ErrorMessage;
+import site.cleanfree.be_admin.common.exception.ErrorStatus;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
@@ -20,15 +25,15 @@ public class ApplicationConfig {
 
     @Bean
     public UserDetailsService memberDetailsService() {
-        return uuid -> adminRepository.findByAdminId(uuid)
+        return uuid -> adminRepository.findByAdminUuid(uuid)
                 .map(admin -> new User(
-                        admin.getAdminId(),
+                        admin.getAdminUuid(),
                         "",
                         new ArrayList<>()
                 ))
                 .orElseThrow(
                         //todo 해당 정보는 없을 때 예외 필요
-                        () -> null);
+                        () -> new CustomException(ErrorStatus.INCORRECT_ID, ErrorMessage.ID_NOT_EXISTED));
     }
 
     @Bean

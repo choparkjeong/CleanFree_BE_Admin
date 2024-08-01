@@ -4,7 +4,7 @@ import lombok.*;
 
 @Builder
 @ToString
-public class AdminSignupDto {
+public class AdminSignUpDto {
     private String id;
     private String pw;
     private String adminUuid;

@@ -1,10 +1,12 @@
 package site.cleanfree.be_admin.common.exception;
 
 import org.springframework.core.codec.DecodingException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import site.cleanfree.be_admin.common.BaseResponse;
 
 @ControllerAdvice
@@ -29,6 +31,12 @@ public class GlobalExceptionHandler {
                 .message("Invalid request body")
                 .data(null)
                 .build());
+    }
+
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<BaseResponse<?>> handleCustomException(CustomException ex) {
+        return ResponseEntity.ok()
+                .body(BaseResponse.failResponse(ex.getErrorMessage(), ex.getStatus()));
     }
 
 }
