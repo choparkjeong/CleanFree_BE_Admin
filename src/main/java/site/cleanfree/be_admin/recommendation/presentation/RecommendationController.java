@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import site.cleanfree.be_admin.common.BaseResponse;
 import site.cleanfree.be_admin.recommendation.application.RecommendationService;
 import site.cleanfree.be_admin.recommendation.data.dto.ResultResponseDto;
-import site.cleanfree.be_admin.recommendation.data.vo.QuestionVo;
 import site.cleanfree.be_admin.recommendation.data.vo.RecommendRequestVo;
 
 @RestController
@@ -29,14 +28,6 @@ public class RecommendationController {
         recommendationService.recommend(id, recommendRequestVo);
         return ResponseEntity.ok()
                 .body(BaseResponse.successResponse("Recommend Success"));
-    }
-
-    @PostMapping
-    public ResponseEntity<BaseResponse<?>> search(
-            @RequestHeader String Authorization,
-            @RequestBody QuestionVo questionVo
-    ) {
-        return ResponseEntity.ok(recommendationService.search(Authorization, questionVo));
     }
 
     @GetMapping("/result/{id}")

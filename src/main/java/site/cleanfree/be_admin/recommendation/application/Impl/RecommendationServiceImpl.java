@@ -9,17 +9,14 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.cleanfree.be_admin.common.BaseResponse;
-import site.cleanfree.be_admin.common.UuidProvider;
 import site.cleanfree.be_admin.common.exception.CustomException;
 import site.cleanfree.be_admin.common.exception.ErrorMessage;
 import site.cleanfree.be_admin.common.exception.ErrorStatus;
 import site.cleanfree.be_admin.recommendation.application.RecommendationService;
 import site.cleanfree.be_admin.recommendation.data.dto.ResultResponseDto;
-import site.cleanfree.be_admin.recommendation.data.vo.QuestionVo;
 import site.cleanfree.be_admin.recommendation.data.vo.RecommendRequestVo;
 import site.cleanfree.be_admin.recommendation.domain.Recommendation;
 import site.cleanfree.be_admin.recommendation.infrastructure.RecommendationRepository;
-import site.cleanfree.be_admin.security.JwtTokenProvider;
 
 import java.time.LocalDateTime;
 
@@ -30,7 +27,6 @@ import java.time.LocalDateTime;
 public class RecommendationServiceImpl implements RecommendationService {
     private final MongoTemplate mongoTemplate;
     private final RecommendationRepository recommendationRepository;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     @Transactional
@@ -49,45 +45,6 @@ public class RecommendationServiceImpl implements RecommendationService {
         } catch(Exception e) {
             log.error("Failed to update document with id: {}", id, e);
             throw new CustomException(ErrorStatus.INCORRECT_ID, ErrorMessage.ID_NOT_EXISTED);
-        }
-    }
-
-    public BaseResponse<?> search(String authorization, QuestionVo questionVo) {
-        String resultId = UuidProvider.generateRecommendationResultId();
-        String memberUuid = jwtTokenProvider.getUuid(authorization);
-        String question = questionVo.getQuestion();
-
-        if (question == null || question.isEmpty()) {
-            return BaseResponse.builder()
-                    .success(false)
-                    .errorCode(ErrorStatus.DATA_PERSIST_ERROR.getCode())
-                    .message("request question not exist")
-                    .data(null)
-                    .build();
-        }
-
-        try {
-            recommendationRepository.save(Recommendation.builder()
-                    .resultId(resultId)
-                    .memberUuid(memberUuid)
-                    .question(questionVo.getQuestion())
-                    .isAnalyze(false)
-                    .build());
-            log.info("question saved");
-            return BaseResponse.builder()
-                    .success(true)
-                    .errorCode(null)
-                    .message("question save success")
-                    .data(null)
-                    .build();
-        } catch (Exception e) {
-            log.info("question save fail because of {}", e.getMessage());
-            return BaseResponse.builder()
-                    .success(false)
-                    .errorCode(ErrorStatus.DATA_PERSIST_ERROR.getCode())
-                    .message("question save fail")
-                    .data(null)
-                    .build();
         }
     }
 
