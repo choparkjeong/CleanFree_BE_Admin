@@ -8,6 +8,8 @@ import java.util.List;
 
 @Getter
 public class RecommendRequestVo {
+
+    private String answer;
     private List<Cosmetic> cosmeticList;
     private List<String> ingredients;
     private Reference references;

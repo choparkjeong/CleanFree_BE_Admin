@@ -37,6 +37,7 @@ public class RecommendationServiceImpl implements RecommendationService {
         Query query = new Query(Criteria.where("resultId").is(id));
         Update update = new Update()
                 .set("updatedAt", LocalDateTime.now())
+                .set("answer", recommendRequestVo.getAnswer())
                 .set("cosmetics", recommendRequestVo.getCosmeticList())
                 .set("ingredients", recommendRequestVo.getIngredients())
                 .set("references", recommendRequestVo.getReferences())
