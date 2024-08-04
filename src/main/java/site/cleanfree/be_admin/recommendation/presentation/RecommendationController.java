@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import site.cleanfree.be_admin.common.BaseResponse;
 import site.cleanfree.be_admin.recommendation.application.RecommendationService;
 import site.cleanfree.be_admin.recommendation.data.dto.ResultResponseDto;
+import site.cleanfree.be_admin.recommendation.data.vo.GetRecommendationResponseVo;
 import site.cleanfree.be_admin.recommendation.data.vo.RecommendRequestVo;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -36,5 +39,14 @@ public class RecommendationController {
             @PathVariable String id
     ) {
         return ResponseEntity.ok(recommendationService.getResult(Authorization, id));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<BaseResponse<List<GetRecommendationResponseVo>>> getRecommendation(
+            @RequestHeader String Authorization
+    ) {
+        return ResponseEntity.ok()
+                .body(BaseResponse.successResponse(
+                        "Recommendation Search Success", recommendationService.getRecommendation()));
     }
 }

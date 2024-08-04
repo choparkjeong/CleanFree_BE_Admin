@@ -14,11 +14,14 @@ import site.cleanfree.be_admin.common.exception.ErrorMessage;
 import site.cleanfree.be_admin.common.exception.ErrorStatus;
 import site.cleanfree.be_admin.recommendation.application.RecommendationService;
 import site.cleanfree.be_admin.recommendation.data.dto.ResultResponseDto;
+import site.cleanfree.be_admin.recommendation.data.vo.GetRecommendationResponseVo;
 import site.cleanfree.be_admin.recommendation.data.vo.RecommendRequestVo;
 import site.cleanfree.be_admin.recommendation.domain.Recommendation;
 import site.cleanfree.be_admin.recommendation.infrastructure.RecommendationRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Slf4j
@@ -77,6 +80,23 @@ public class RecommendationServiceImpl implements RecommendationService {
                                 .build()
                 )
                 .build();
+    }
+
+    @Override
+    public List<GetRecommendationResponseVo> getRecommendation() {
+        List<Recommendation> recommendationList = recommendationRepository.findAllByOrderByCreatedAtDesc();
+        List<GetRecommendationResponseVo> getRecommendationResponseVoList = new ArrayList<>();
+
+        for (Recommendation recommendation : recommendationList) {
+            getRecommendationResponseVoList.add(GetRecommendationResponseVo.builder()
+                    .isAnalyze(recommendation.getIsAnalyze())
+                    .memberUuid(recommendation.getMemberUuid())
+                    .question(recommendation.getQuestion())
+                    .resultId(recommendation.getResultId())
+                    .build());
+        }
+
+        return getRecommendationResponseVoList;
     }
 
     private Recommendation getRecommendationByResultId(String resultId) {

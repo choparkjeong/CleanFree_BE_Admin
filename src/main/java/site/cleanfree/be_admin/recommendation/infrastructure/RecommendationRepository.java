@@ -12,4 +12,6 @@ public interface RecommendationRepository extends MongoRepository<Recommendation
     Optional<Recommendation> getRecommendationByResultId(String resultId);
 
     List<Recommendation> getAllByMemberUuid(String memberUuid);
+
+    List<Recommendation> findAllByOrderByCreatedAtDesc();
 }
