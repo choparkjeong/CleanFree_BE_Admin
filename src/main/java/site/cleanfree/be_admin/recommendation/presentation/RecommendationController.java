@@ -17,7 +17,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Tag(name = "맞춤 화장품 답변 API", description = "맞춤 화장품 답변 API")
-@RequestMapping("/api/v1/recommend")
+@RequestMapping("/api/v1/admin/recommend")
 public class RecommendationController {
 
     private final RecommendationService recommendationService;

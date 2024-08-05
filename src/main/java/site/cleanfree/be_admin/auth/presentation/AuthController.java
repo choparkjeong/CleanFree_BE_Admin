@@ -17,7 +17,7 @@ import site.cleanfree.be_admin.common.BaseResponse;
 @Slf4j
 @RequiredArgsConstructor
 @Tag(name = "관리자", description = "관리자 API")
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/v1/admin/auth")
 public class AuthController {
     private final AuthService authService;
 
