@@ -39,8 +39,6 @@ public class RecommendationServiceImpl implements RecommendationService {
                 .set("updatedAt", LocalDateTime.now())
                 .set("answer", recommendRequestVo.getAnswer())
                 .set("cosmetics", recommendRequestVo.getCosmeticList())
-                .set("ingredients", recommendRequestVo.getIngredients())
-                .set("solutions", recommendRequestVo.getSolutions())
                 .set("references", recommendRequestVo.getReferences())
                 .set("isAnalyze", true)
                 ;
