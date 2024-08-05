@@ -7,6 +7,7 @@ import site.cleanfree.be_admin.recommendation.domain.Cosmetic;
 import site.cleanfree.be_admin.recommendation.domain.Reference;
 
 import java.util.List;
+import site.cleanfree.be_admin.recommendation.domain.Solution;
 
 @Getter
 @Setter
@@ -16,8 +17,10 @@ public class ResultResponseDto {
     private String resultId;
     private String memberUuid;
     private String question;
+    private String answer;
     private List<Cosmetic> cosmetics;
     private List<String> ingredients;
+    private List<Solution> solutions;
     private Reference references;
     private boolean isAnalyze;
 

@@ -40,6 +40,7 @@ public class RecommendationServiceImpl implements RecommendationService {
                 .set("answer", recommendRequestVo.getAnswer())
                 .set("cosmetics", recommendRequestVo.getCosmeticList())
                 .set("ingredients", recommendRequestVo.getIngredients())
+                .set("solutions", recommendRequestVo.getSolutions())
                 .set("references", recommendRequestVo.getReferences())
                 .set("isAnalyze", true)
                 ;
@@ -74,8 +75,10 @@ public class RecommendationServiceImpl implements RecommendationService {
                                 .resultId(recommendationResult.getResultId())
                                 .memberUuid(recommendationResult.getMemberUuid())
                                 .question(recommendationResult.getQuestion())
+                                .answer(recommendationResult.getAnswer())
                                 .cosmetics(recommendationResult.getCosmetics())
                                 .ingredients(recommendationResult.getIngredients())
+                                .solutions(recommendationResult.getSolutions())
                                 .references(recommendationResult.getReferences())
                                 .isAnalyze(recommendationResult.getIsAnalyze())
                                 .build()
