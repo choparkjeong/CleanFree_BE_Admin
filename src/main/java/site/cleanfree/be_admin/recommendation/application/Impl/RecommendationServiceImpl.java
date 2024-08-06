@@ -91,10 +91,12 @@ public class RecommendationServiceImpl implements RecommendationService {
 
         for (Recommendation recommendation : recommendationList) {
             getRecommendationResponseVoList.add(GetRecommendationResponseVo.builder()
-                    .isAnalyze(recommendation.getIsAnalyze())
-                    .memberUuid(recommendation.getMemberUuid())
-                    .question(recommendation.getQuestion())
-                    .resultId(recommendation.getResultId())
+                .resultId(recommendation.getResultId())
+                .memberUuid(recommendation.getMemberUuid())
+                .question(recommendation.getQuestion())
+                .ingredients(recommendation.getIngredients())
+                .solutions(recommendation.getSolutions())
+                .isAnalyze(recommendation.getIsAnalyze())
                     .build());
         }
 
