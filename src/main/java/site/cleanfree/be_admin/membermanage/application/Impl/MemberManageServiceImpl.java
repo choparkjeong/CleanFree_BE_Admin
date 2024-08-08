@@ -45,10 +45,8 @@ public class MemberManageServiceImpl implements MemberManageService {
             .map(Member::getUuid)
             .toList();
 
-        log.info("memberUuids: {}", memberUuids);
-
         List<Recommendation> firstRecommendations = recommendationRepository
-            .findFirstByMemberUuidInOrderByCreatedAtAsc(memberUuids);
+            .findOldestRecommendationsByMemberUuids(memberUuids);
 
         if (firstRecommendations.isEmpty()) {
             return BaseResponse.<List<MemberInfoDto>>builder()
@@ -59,8 +57,6 @@ public class MemberManageServiceImpl implements MemberManageService {
                 .build();
         }
 
-        log.info("firstRecommendations: {}", firstRecommendations);
-
         // UUID를 키로 하고 첫 번째 검색 시간을 값으로 하는 Map 생성
         Map<String, LocalDateTime> firstSearchTimeMap = firstRecommendations.stream()
             .filter(rec -> rec != null && rec.getMemberUuid() != null && rec.getCreatedAt() != null)
@@ -69,8 +65,6 @@ public class MemberManageServiceImpl implements MemberManageService {
                 Recommendation::getCreatedAt,
                 (existing, replacement) -> existing
             ));
-
-        log.info("firstSearchTimeMap: {}", firstSearchTimeMap);
 
         List<MemberInfoDto> memberInfoDtos = members.stream()
             .map(member -> MemberInfoDto.builder()
@@ -81,8 +75,8 @@ public class MemberManageServiceImpl implements MemberManageService {
                 .totalSearchCount(member.getTotalSearchCount())
                 .dayAccessCount(member.getDayAccessCount())
                 .firstSearchTime(firstSearchTimeMap.get(member.getUuid()) == null ?
-                        null : TimeConvertor.utcToKst(firstSearchTimeMap.get(member.getUuid())).format(
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                    null : TimeConvertor.utcToKst(firstSearchTimeMap.get(member.getUuid())).format(
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .lastSearchTime(TimeConvertor.utcToKst(member.getUpdatedAt()).format(
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .build())

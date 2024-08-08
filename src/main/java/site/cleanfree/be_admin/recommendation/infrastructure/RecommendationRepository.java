@@ -1,6 +1,7 @@
 package site.cleanfree.be_admin.recommendation.infrastructure;
 
 
+import org.springframework.data.mongodb.repository.Aggregation;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import site.cleanfree.be_admin.recommendation.domain.Recommendation;
 
@@ -15,5 +16,11 @@ public interface RecommendationRepository extends MongoRepository<Recommendation
 
     List<Recommendation> findAllByOrderByCreatedAtDesc();
 
-    List<Recommendation> findFirstByMemberUuidInOrderByCreatedAtAsc(List<String> memberUuids);
+    @Aggregation(pipeline = {
+        "{ $match: { memberUuid: { $in: ?0 } } }",
+        "{ $group: { _id: '$memberUuid', oldestRecommendation: { $first: '$$ROOT' } } }",
+        "{ $replaceRoot: { newRoot: '$oldestRecommendation' } }",
+        "{ $sort: { createdAt: 1 } }"
+    })
+    List<Recommendation> findOldestRecommendationsByMemberUuids(List<String> memberUuids);
 }
