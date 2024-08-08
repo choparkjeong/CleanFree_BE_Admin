@@ -13,4 +13,6 @@ public class MemberInfoDto {
     private String birthDate;
     private int totalSearchCount;
     private int dayAccessCount;
+    private String firstSearchTime;
+    private String lastSearchTime;
 }

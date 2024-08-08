@@ -33,10 +33,9 @@ public class JwtTokenProvider {
             if (token.contains("Bearer ")) {
                 token = token.substring(7).trim();
             }
-            log.info("token: {}", token);
             return extractClaim(token, Claims::getSubject);
         } catch (Exception e) {
-            log.info("Error parsing JWT: {}, error message: {}", token, e.getMessage());
+            log.info("Error parsing JWT isEmpty: {}, error message: {}", token.isEmpty(), e.getMessage());
             return null;
         }
     }

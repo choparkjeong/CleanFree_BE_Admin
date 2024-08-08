@@ -40,6 +40,6 @@ public class AuthController {
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.AUTHORIZATION, authService.signIn(adminSignInRequestVo))
-                .body(BaseResponse.successResponse("SignUp Success"));
+                .body(BaseResponse.successResponse("SignIn Success"));
     }
 }
