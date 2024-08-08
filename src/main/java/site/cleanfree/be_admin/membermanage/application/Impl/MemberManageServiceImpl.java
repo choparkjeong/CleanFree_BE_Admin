@@ -74,10 +74,10 @@ public class MemberManageServiceImpl implements MemberManageService {
                 .birthDate(member.getBirthDate())
                 .totalSearchCount(member.getTotalSearchCount())
                 .dayAccessCount(member.getDayAccessCount())
-                .firstSearchTime(
-                    TimeConvertor.utcToKst(firstSearchTimeMap.get(member.getUuid())).format(
+                .firstSearchTime(firstSearchTimeMap.get(member.getUuid()) == null ?
+                        null : TimeConvertor.utcToKst(firstSearchTimeMap.get(member.getUuid())).format(
                         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                .lastSearchTime(TimeConvertor.utcToKst(member.getUpdatedAt()).format(
+                .lastSearchTime(member.getUpdatedAt() ==null ? null : TimeConvertor.utcToKst(member.getUpdatedAt()).format(
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .build())
             .toList();
