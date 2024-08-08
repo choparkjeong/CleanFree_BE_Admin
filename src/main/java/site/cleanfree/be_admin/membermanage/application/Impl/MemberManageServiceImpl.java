@@ -66,6 +66,8 @@ public class MemberManageServiceImpl implements MemberManageService {
                 (existing, replacement) -> existing
             ));
 
+        log.info("firstSearchTimeMap: {}", firstSearchTimeMap);
+
         List<MemberInfoDto> memberInfoDtos = members.stream()
             .map(member -> MemberInfoDto.builder()
                 .name(member.getName())
