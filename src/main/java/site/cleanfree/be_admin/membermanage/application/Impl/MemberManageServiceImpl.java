@@ -1,21 +1,27 @@
 package site.cleanfree.be_admin.membermanage.application.Impl;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.GroupOperation;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
+import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
+import org.springframework.data.mongodb.core.aggregation.SortOperation;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.cleanfree.be_admin.common.BaseResponse;
-import site.cleanfree.be_admin.common.TimeConvertor;
 import site.cleanfree.be_admin.membermanage.application.MemberManageService;
 import site.cleanfree.be_admin.membermanage.domain.Member;
-import site.cleanfree.be_admin.membermanage.dto.MemberInfoDto;
+import site.cleanfree.be_admin.membermanage.dto.FirstAndLastQuestionTime;
 import site.cleanfree.be_admin.membermanage.infrastructure.MemberManageRepository;
-import site.cleanfree.be_admin.recommendation.domain.Recommendation;
 import site.cleanfree.be_admin.recommendation.infrastructure.RecommendationRepository;
 
 
@@ -24,16 +30,17 @@ import site.cleanfree.be_admin.recommendation.infrastructure.RecommendationRepos
 @RequiredArgsConstructor
 public class MemberManageServiceImpl implements MemberManageService {
 
+    private final MongoTemplate mongoTemplate;
     private final MemberManageRepository memberManageRepository;
     private final RecommendationRepository recommendationRepository;
 
     @Override
     @Transactional(readOnly = true)
-    public BaseResponse<List<MemberInfoDto>> getMemberInfos() {
+    public BaseResponse<List<FirstAndLastQuestionTime>> getMemberInfos() {
         List<Member> members = memberManageRepository.findAll();
 
         if (members.isEmpty()) {
-            return BaseResponse.<List<MemberInfoDto>>builder()
+            return BaseResponse.<List<FirstAndLastQuestionTime>>builder()
                 .success(true)
                 .errorCode(null)
                 .message("there are no members")
@@ -41,15 +48,11 @@ public class MemberManageServiceImpl implements MemberManageService {
                 .build();
         }
 
-        List<String> memberUuids = members.stream()
-            .map(Member::getUuid)
-            .toList();
+        List<FirstAndLastQuestionTime> firstAndLastQuestionTimes = findFirstAndLastRecommendationsByMemberUuids(
+            members);
 
-        List<Recommendation> firstRecommendations = recommendationRepository
-            .findOldestRecommendationsByMemberUuids(memberUuids);
-
-        if (firstRecommendations.isEmpty()) {
-            return BaseResponse.<List<MemberInfoDto>>builder()
+        if (firstAndLastQuestionTimes.isEmpty()) {
+            return BaseResponse.<List<FirstAndLastQuestionTime>>builder()
                 .success(true)
                 .errorCode(null)
                 .message("there are no recommendations")
@@ -57,36 +60,62 @@ public class MemberManageServiceImpl implements MemberManageService {
                 .build();
         }
 
-        // UUID를 키로 하고 첫 번째 검색 시간을 값으로 하는 Map 생성
-        Map<String, LocalDateTime> firstSearchTimeMap = firstRecommendations.stream()
-            .filter(rec -> rec != null && rec.getMemberUuid() != null && rec.getCreatedAt() != null)
-            .collect(Collectors.toMap(
-                Recommendation::getMemberUuid,
-                Recommendation::getCreatedAt,
-                (existing, replacement) -> existing
-            ));
-
-        List<MemberInfoDto> memberInfoDtos = members.stream()
-            .map(member -> MemberInfoDto.builder()
-                .name(member.getName())
-                .email(member.getEmail())
-                .gender(member.getGender())
-                .birthDate(member.getBirthDate())
-                .totalSearchCount(member.getTotalSearchCount())
-                .dayAccessCount(member.getDayAccessCount())
-                .firstSearchTime(firstSearchTimeMap.get(member.getUuid()) == null ?
-                    null : TimeConvertor.utcToKst(firstSearchTimeMap.get(member.getUuid())).format(
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                .lastSearchTime(TimeConvertor.utcToKst(member.getUpdatedAt()).format(
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                .build())
-            .toList();
-
-        return BaseResponse.<List<MemberInfoDto>>builder()
+        return BaseResponse.<List<FirstAndLastQuestionTime>>builder()
             .success(true)
             .errorCode(null)
             .message("find all member")
-            .data(memberInfoDtos)
+            .data(firstAndLastQuestionTimes)
             .build();
     }
+
+    private List<FirstAndLastQuestionTime> findFirstAndLastRecommendationsByMemberUuids(
+        List<Member> members) {
+
+        Map<String, Member> memberUuidToMemberMap = members.stream()
+            .collect(Collectors.toMap(Member::getUuid, member -> member));
+
+        Set<String> memberUuids = memberUuidToMemberMap.keySet();
+
+        MatchOperation matchOperation = Aggregation.match(
+            Criteria.where("memberUuid").in(memberUuids));
+
+        GroupOperation groupOperation = Aggregation.group("memberUuid")
+            .min("createdAt").as("firstSearchTime")
+            .max("createdAt").as("lastSearchTime");
+
+        ProjectionOperation projectionOperation = Aggregation.project()
+            .and("_id").as("memberUuid")
+            .and("firstSearchTime").as("firstSearchTime")
+            .and("lastSearchTime").as("lastSearchTime");
+
+        SortOperation sortOperation = Aggregation.sort(Sort.Direction.DESC, "lastSearchTime");
+
+        Aggregation aggregation = Aggregation.newAggregation(
+            matchOperation,
+            groupOperation,
+            projectionOperation,
+            sortOperation
+        );
+
+        AggregationResults<FirstAndLastQuestionTime> results = mongoTemplate.aggregate(
+            aggregation, "recommendation_service", FirstAndLastQuestionTime.class);
+
+        return results.getMappedResults()
+            .stream()
+            .map(result -> {
+                String memberUuid = result.getMemberUuid();
+                Member member = memberUuidToMemberMap.get(memberUuid);
+                if (member != null) {
+                    result.setName(member.getName());
+                    result.setEmail(member.getEmail());
+                    result.setGender(member.getGender());
+                    result.setBirthDate(member.getBirthDate());
+                    result.setTotalSearchCount(member.getTotalSearchCount());
+                    result.setDayAccessCount(member.getDayAccessCount());
+                    result.convertKst();
+                }
+                return result;
+            }).toList();
+    }
+
 }

@@ -1,5 +1,6 @@
 package site.cleanfree.be_admin.common;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -11,12 +12,6 @@ public class TimeConvertor {
 
     public static LocalDate dateTimeToDate(LocalDateTime time) {
         return time.toLocalDate();
-    }
-
-    public static LocalDate utcStringToKst(String utcString) {
-        LocalDateTime utcTime = ZonedDateTime.parse(utcString).toLocalDateTime();
-        return utcTime.atZone(ZoneId.of("UTC"))
-            .withZoneSameInstant(ZoneId.of("Asia/Seoul")).toLocalDate();
     }
 
     public static LocalDateTime utcToKst(LocalDateTime utcTime) {
@@ -38,7 +33,8 @@ public class TimeConvertor {
     }
 
     public static LocalDateTime writeTimeToDateTime(String writeTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd yyyy HH:mm:ss 'GMT'Z", Locale.ENGLISH);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd yyyy HH:mm:ss 'GMT'Z",
+            Locale.ENGLISH);
 
         return LocalDateTime.parse(writeTime, formatter);
     }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import site.cleanfree.be_admin.common.BaseResponse;
 import site.cleanfree.be_admin.membermanage.application.MemberManageService;
-import site.cleanfree.be_admin.membermanage.dto.MemberInfoDto;
+import site.cleanfree.be_admin.membermanage.dto.FirstAndLastQuestionTime;
 
 @RestController
 @RequestMapping("/api/v1/admin/member-manage")
@@ -23,7 +23,7 @@ public class MemberManageController {
 
     @GetMapping("/all")
     @Operation(summary = "회원 목록 조회 API", description = "모든 회원 정보를 조회합니다.")
-    public ResponseEntity<BaseResponse<List<MemberInfoDto>>> getAllMemberInfos(
+    public ResponseEntity<BaseResponse<List<FirstAndLastQuestionTime>>> getAllMemberInfos(
         @RequestHeader String Authorization
     ) {
         return ResponseEntity.ok(memberManageService.getMemberInfos());
