@@ -1,7 +1,6 @@
 package site.cleanfree.be_admin.recommendation.infrastructure;
 
 
-import java.util.Collection;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import site.cleanfree.be_admin.recommendation.domain.Recommendation;
 
@@ -16,5 +15,5 @@ public interface RecommendationRepository extends MongoRepository<Recommendation
 
     List<Recommendation> findAllByOrderByCreatedAtDesc();
 
-    List<Recommendation> findFirstByMemberUuidInOrderByCreatedAtAsc(Collection<String> memberUuids);
+    List<Recommendation> findFirstByMemberUuidInOrderByCreatedAtAsc(List<String> memberUuids);
 }
