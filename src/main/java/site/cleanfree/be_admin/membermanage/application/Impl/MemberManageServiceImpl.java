@@ -45,6 +45,8 @@ public class MemberManageServiceImpl implements MemberManageService {
             .map(Member::getUuid)
             .toList();
 
+        log.info("memberUuids: {}", memberUuids);
+
         List<Recommendation> firstRecommendations = recommendationRepository
             .findFirstByMemberUuidInOrderByCreatedAtAsc(memberUuids);
 
@@ -57,6 +59,8 @@ public class MemberManageServiceImpl implements MemberManageService {
                 .build();
         }
 
+        log.info("firstRecommendations: {}", firstRecommendations);
+
         // UUID를 키로 하고 첫 번째 검색 시간을 값으로 하는 Map 생성
         Map<String, LocalDateTime> firstSearchTimeMap = firstRecommendations.stream()
             .filter(rec -> rec != null && rec.getMemberUuid() != null && rec.getCreatedAt() != null)
@@ -65,6 +69,8 @@ public class MemberManageServiceImpl implements MemberManageService {
                 Recommendation::getCreatedAt,
                 (existing, replacement) -> existing
             ));
+
+        log.info("firstSearchTimeMap: {}", firstSearchTimeMap);
 
         List<MemberInfoDto> memberInfoDtos = members.stream()
             .map(member -> MemberInfoDto.builder()
