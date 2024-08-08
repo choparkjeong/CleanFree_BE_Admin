@@ -19,6 +19,11 @@ public class TimeConvertor {
             .withZoneSameInstant(ZoneId.of("Asia/Seoul")).toLocalDate();
     }
 
+    public static LocalDateTime utcToKst(LocalDateTime utcTime) {
+        return utcTime.atZone(ZoneId.of("UTC"))
+            .withZoneSameInstant(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+    }
+
     public static String convertWriteTime(String writeTime) {
         // 입력 형식 지정
         DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern(
