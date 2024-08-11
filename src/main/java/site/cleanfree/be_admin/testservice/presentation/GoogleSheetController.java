@@ -10,7 +10,7 @@ import site.cleanfree.be_admin.testservice.application.GoogleSheetService;
 import site.cleanfree.be_admin.testservice.dto.GoogleSheetResponseDto;
 
 @RestController
-@RequestMapping("/api/v1/googlesheet")
+@RequestMapping("/api/v1/admin/googlesheet")
 @RequiredArgsConstructor
 public class GoogleSheetController {
 
