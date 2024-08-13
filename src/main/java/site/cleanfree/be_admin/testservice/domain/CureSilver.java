@@ -6,8 +6,8 @@ import lombok.Getter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
-@Document(collection = "cozy_house")
-public class CozyHouse {
+@Document(collection = "cure_silver")
+public class CureSilver {
 
     @Id
     private String id;

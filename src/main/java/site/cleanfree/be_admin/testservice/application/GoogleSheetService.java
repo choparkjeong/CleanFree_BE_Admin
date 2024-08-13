@@ -5,27 +5,35 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.cleanfree.be_admin.testservice.domain.CarryCabin;
 import site.cleanfree.be_admin.testservice.domain.CarryCabinAccess;
-import site.cleanfree.be_admin.testservice.domain.Consultant;
-import site.cleanfree.be_admin.testservice.domain.ConsultantAccess;
+import site.cleanfree.be_admin.testservice.domain.CreateEasy;
+import site.cleanfree.be_admin.testservice.domain.CreateEasyAccess;
 import site.cleanfree.be_admin.testservice.domain.CookingStation;
 import site.cleanfree.be_admin.testservice.domain.CookingStationAccess;
 import site.cleanfree.be_admin.testservice.domain.CozyHouse;
 import site.cleanfree.be_admin.testservice.domain.CozyHouseAccess;
 import site.cleanfree.be_admin.testservice.domain.Cozyquick;
 import site.cleanfree.be_admin.testservice.domain.CozyquickAccess;
+import site.cleanfree.be_admin.testservice.domain.CreateValue;
+import site.cleanfree.be_admin.testservice.domain.CreateValueAccess;
+import site.cleanfree.be_admin.testservice.domain.CureSilver;
+import site.cleanfree.be_admin.testservice.domain.CureSilverAccess;
 import site.cleanfree.be_admin.testservice.domain.Visa;
 import site.cleanfree.be_admin.testservice.domain.VisaAccess;
 import site.cleanfree.be_admin.testservice.dto.GoogleSheetResponseDto;
 import site.cleanfree.be_admin.testservice.infrastructure.CarryCabinAccessRepository;
 import site.cleanfree.be_admin.testservice.infrastructure.CarryCabinRepository;
-import site.cleanfree.be_admin.testservice.infrastructure.ConsultantAccessRepository;
-import site.cleanfree.be_admin.testservice.infrastructure.ConsultantRepository;
+import site.cleanfree.be_admin.testservice.infrastructure.CreateEasyAccessRepository;
+import site.cleanfree.be_admin.testservice.infrastructure.CreateEasyRepository;
 import site.cleanfree.be_admin.testservice.infrastructure.CookingStationAccessRepository;
 import site.cleanfree.be_admin.testservice.infrastructure.CookingStationRepository;
 import site.cleanfree.be_admin.testservice.infrastructure.CozyHouseAccessRepository;
 import site.cleanfree.be_admin.testservice.infrastructure.CozyHouseRepository;
 import site.cleanfree.be_admin.testservice.infrastructure.CozyquickAccessRepository;
 import site.cleanfree.be_admin.testservice.infrastructure.CozyquickRepository;
+import site.cleanfree.be_admin.testservice.infrastructure.CreateValueAccessRepository;
+import site.cleanfree.be_admin.testservice.infrastructure.CreateValueRepository;
+import site.cleanfree.be_admin.testservice.infrastructure.CureSilverAccessRepository;
+import site.cleanfree.be_admin.testservice.infrastructure.CureSilverRepository;
 import site.cleanfree.be_admin.testservice.infrastructure.VisaAccessRepository;
 import site.cleanfree.be_admin.testservice.infrastructure.VisaRepository;
 
@@ -35,8 +43,8 @@ public class GoogleSheetService {
 
     private final CarryCabinRepository carryCabinRepository;
     private final CarryCabinAccessRepository carryCabinAccessRepository;
-    private final ConsultantRepository consultantRepository;
-    private final ConsultantAccessRepository consultantAccessRepository;
+    private final CreateEasyRepository createEasyRepository;
+    private final CreateEasyAccessRepository createEasyAccessRepository;
     private final CookingStationRepository cookingStationRepository;
     private final CookingStationAccessRepository cookingStationAccessRepository;
     private final CozyquickRepository cozyquickRepository;
@@ -45,13 +53,14 @@ public class GoogleSheetService {
     private final CozyHouseAccessRepository cozyHouseAccessRepository;
     private final VisaRepository visaRepository;
     private final VisaAccessRepository visaAccessRepository;
+    private final CreateValueRepository createValueRepository;
+    private final CreateValueAccessRepository createValueAccessRepository;
+    private final CureSilverRepository cureSilverRepository;
+    private final CureSilverAccessRepository cureSilverAccessRepository;
 
     public List<GoogleSheetResponseDto> getServiceCount() {
         List<CarryCabin> carryCabins = carryCabinRepository.findAll();
         List<CarryCabinAccess> carryCabinAccesses = carryCabinAccessRepository.findAll();
-
-        List<Consultant> consultants = consultantRepository.findAll();
-        List<ConsultantAccess> consultantAccesses = consultantAccessRepository.findAll();
 
         List<CookingStation> cookingStations = cookingStationRepository.findAll();
         List<CookingStationAccess> cookingStationAccesses = cookingStationAccessRepository.findAll();
@@ -65,19 +74,21 @@ public class GoogleSheetService {
         List<Visa> visas = visaRepository.findAll();
         List<VisaAccess> visaAccesses = visaAccessRepository.findAll();
 
+        List<CreateValue> createValues = createValueRepository.findAll();
+        List<CreateValueAccess> createValueAccesses = createValueAccessRepository.findAll();
+
+        List<CreateEasy> createEasies = createEasyRepository.findAll();
+        List<CreateEasyAccess> createEasyAccesses = createEasyAccessRepository.findAll();
+
+        List<CureSilver> cureSilvers = cureSilverRepository.findAll();
+        List<CureSilverAccess> cureSilverAccesses = cureSilverAccessRepository.findAll();
+
         return List.of(
             GoogleSheetResponseDto.builder()
                 .service("carry cabin")
                 .registerCount(carryCabins.size())
                 .accessCount(carryCabinAccesses.stream()
                     .mapToInt(CarryCabinAccess::getCount)
-                    .sum())
-                .build(),
-            GoogleSheetResponseDto.builder()
-                .service("consultant")
-                .registerCount(consultants.size())
-                .accessCount(consultantAccesses.stream()
-                    .mapToInt(ConsultantAccess::getCount)
                     .sum())
                 .build(),
             GoogleSheetResponseDto.builder()
@@ -106,6 +117,27 @@ public class GoogleSheetService {
                 .registerCount(visas.size())
                 .accessCount(visaAccesses.stream()
                     .mapToInt(VisaAccess::getCount)
+                    .sum())
+                .build(),
+            GoogleSheetResponseDto.builder()
+                .service("create value")
+                .registerCount(createValues.size())
+                .accessCount(createValueAccesses.stream()
+                    .mapToInt(CreateValueAccess::getCount)
+                    .sum())
+                .build(),
+            GoogleSheetResponseDto.builder()
+                .service("create easy")
+                .registerCount(createEasies.size())
+                .accessCount(createEasyAccesses.stream()
+                    .mapToInt(CreateEasyAccess::getCount)
+                    .sum())
+                .build(),
+            GoogleSheetResponseDto.builder()
+                .service("cure silver")
+                .registerCount(cureSilvers.size())
+                .accessCount(cureSilverAccesses.stream()
+                    .mapToInt(CureSilverAccess::getCount)
                     .sum())
                 .build()
         );
