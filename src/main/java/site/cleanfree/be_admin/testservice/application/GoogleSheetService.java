@@ -19,7 +19,9 @@ import site.cleanfree.be_admin.testservice.domain.CureSilver;
 import site.cleanfree.be_admin.testservice.domain.CureSilverAccess;
 import site.cleanfree.be_admin.testservice.domain.Visa;
 import site.cleanfree.be_admin.testservice.domain.VisaAccess;
-import site.cleanfree.be_admin.testservice.dto.GoogleSheetResponseDto;
+import site.cleanfree.be_admin.testservice.dto.GoogleSheetCountResponseDto;
+import site.cleanfree.be_admin.testservice.dto.RegisterDto;
+import site.cleanfree.be_admin.testservice.dto.ServiceRegisterDto;
 import site.cleanfree.be_admin.testservice.infrastructure.CarryCabinAccessRepository;
 import site.cleanfree.be_admin.testservice.infrastructure.CarryCabinRepository;
 import site.cleanfree.be_admin.testservice.infrastructure.CreateEasyAccessRepository;
@@ -43,8 +45,6 @@ public class GoogleSheetService {
 
     private final CarryCabinRepository carryCabinRepository;
     private final CarryCabinAccessRepository carryCabinAccessRepository;
-    private final CreateEasyRepository createEasyRepository;
-    private final CreateEasyAccessRepository createEasyAccessRepository;
     private final CookingStationRepository cookingStationRepository;
     private final CookingStationAccessRepository cookingStationAccessRepository;
     private final CozyquickRepository cozyquickRepository;
@@ -55,10 +55,12 @@ public class GoogleSheetService {
     private final VisaAccessRepository visaAccessRepository;
     private final CreateValueRepository createValueRepository;
     private final CreateValueAccessRepository createValueAccessRepository;
+    private final CreateEasyRepository createEasyRepository;
+    private final CreateEasyAccessRepository createEasyAccessRepository;
     private final CureSilverRepository cureSilverRepository;
     private final CureSilverAccessRepository cureSilverAccessRepository;
 
-    public List<GoogleSheetResponseDto> getServiceCount() {
+    public List<GoogleSheetCountResponseDto> getServiceCount() {
         List<CarryCabin> carryCabins = carryCabinRepository.findAll();
         List<CarryCabinAccess> carryCabinAccesses = carryCabinAccessRepository.findAll();
 
@@ -84,61 +86,87 @@ public class GoogleSheetService {
         List<CureSilverAccess> cureSilverAccesses = cureSilverAccessRepository.findAll();
 
         return List.of(
-            GoogleSheetResponseDto.builder()
+            GoogleSheetCountResponseDto.builder()
                 .service("carry cabin")
                 .registerCount(carryCabins.size())
                 .accessCount(carryCabinAccesses.stream()
                     .mapToInt(CarryCabinAccess::getCount)
                     .sum())
                 .build(),
-            GoogleSheetResponseDto.builder()
+            GoogleSheetCountResponseDto.builder()
                 .service("cooking station")
                 .registerCount(cookingStations.size())
                 .accessCount(cookingStationAccesses.stream()
                     .mapToInt(CookingStationAccess::getCount)
                     .sum())
                 .build(),
-            GoogleSheetResponseDto.builder()
+            GoogleSheetCountResponseDto.builder()
                 .service("cozy quick")
                 .registerCount(cozyquicks.size())
                 .accessCount(cozyquickAccesses.stream()
                     .mapToInt(CozyquickAccess::getCount)
                     .sum())
                 .build(),
-            GoogleSheetResponseDto.builder()
+            GoogleSheetCountResponseDto.builder()
                 .service("cozy house")
                 .registerCount(cozyHouses.size())
                 .accessCount(cozyHouseAccesses.stream()
                     .mapToInt(CozyHouseAccess::getCount)
                     .sum())
                 .build(),
-            GoogleSheetResponseDto.builder()
+            GoogleSheetCountResponseDto.builder()
                 .service("clear visa")
                 .registerCount(visas.size())
                 .accessCount(visaAccesses.stream()
                     .mapToInt(VisaAccess::getCount)
                     .sum())
                 .build(),
-            GoogleSheetResponseDto.builder()
+            GoogleSheetCountResponseDto.builder()
                 .service("create value")
                 .registerCount(createValues.size())
                 .accessCount(createValueAccesses.stream()
                     .mapToInt(CreateValueAccess::getCount)
                     .sum())
                 .build(),
-            GoogleSheetResponseDto.builder()
+            GoogleSheetCountResponseDto.builder()
                 .service("create easy")
                 .registerCount(createEasies.size())
                 .accessCount(createEasyAccesses.stream()
                     .mapToInt(CreateEasyAccess::getCount)
                     .sum())
                 .build(),
-            GoogleSheetResponseDto.builder()
+            GoogleSheetCountResponseDto.builder()
                 .service("cure silver")
                 .registerCount(cureSilvers.size())
                 .accessCount(cureSilverAccesses.stream()
                     .mapToInt(CureSilverAccess::getCount)
                     .sum())
+                .build()
+        );
+    }
+
+    public List<ServiceRegisterDto> getRegister() {
+        List<CozyHouse> cozyHouses = cozyHouseRepository.findAll();
+        List<Visa> visas = visaRepository.findAll();
+
+        return List.of(
+            ServiceRegisterDto.builder()
+                .service("cosy house")
+                .registrations(cozyHouses.stream().map(cozyHouse ->
+                    RegisterDto.builder()
+                        .name(cozyHouse.getName())
+                        .phoneNumber(cozyHouse.getPhoneNumber())
+                        .build()
+                    ).toList())
+                .build(),
+            ServiceRegisterDto.builder()
+                .service("clear visa")
+                .registrations(visas.stream().map(visa ->
+                    RegisterDto.builder()
+                        .name(visa.getName())
+                        .phoneNumber(visa.getPhoneNumber())
+                        .build()
+                ).toList())
                 .build()
         );
     }
