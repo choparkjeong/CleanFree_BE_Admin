@@ -5,14 +5,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import site.cleanfree.be_admin.testservice.domain.CarryCabin;
 import site.cleanfree.be_admin.testservice.domain.CarryCabinAccess;
-import site.cleanfree.be_admin.testservice.domain.CreateEasy;
-import site.cleanfree.be_admin.testservice.domain.CreateEasyAccess;
 import site.cleanfree.be_admin.testservice.domain.CookingStation;
 import site.cleanfree.be_admin.testservice.domain.CookingStationAccess;
 import site.cleanfree.be_admin.testservice.domain.CozyHouse;
 import site.cleanfree.be_admin.testservice.domain.CozyHouseAccess;
 import site.cleanfree.be_admin.testservice.domain.Cozyquick;
 import site.cleanfree.be_admin.testservice.domain.CozyquickAccess;
+import site.cleanfree.be_admin.testservice.domain.CreateEasy;
+import site.cleanfree.be_admin.testservice.domain.CreateEasyAccess;
 import site.cleanfree.be_admin.testservice.domain.CreateValue;
 import site.cleanfree.be_admin.testservice.domain.CreateValueAccess;
 import site.cleanfree.be_admin.testservice.domain.CureSilver;
@@ -24,14 +24,14 @@ import site.cleanfree.be_admin.testservice.dto.RegisterDto;
 import site.cleanfree.be_admin.testservice.dto.ServiceRegisterDto;
 import site.cleanfree.be_admin.testservice.infrastructure.CarryCabinAccessRepository;
 import site.cleanfree.be_admin.testservice.infrastructure.CarryCabinRepository;
-import site.cleanfree.be_admin.testservice.infrastructure.CreateEasyAccessRepository;
-import site.cleanfree.be_admin.testservice.infrastructure.CreateEasyRepository;
 import site.cleanfree.be_admin.testservice.infrastructure.CookingStationAccessRepository;
 import site.cleanfree.be_admin.testservice.infrastructure.CookingStationRepository;
 import site.cleanfree.be_admin.testservice.infrastructure.CozyHouseAccessRepository;
 import site.cleanfree.be_admin.testservice.infrastructure.CozyHouseRepository;
 import site.cleanfree.be_admin.testservice.infrastructure.CozyquickAccessRepository;
 import site.cleanfree.be_admin.testservice.infrastructure.CozyquickRepository;
+import site.cleanfree.be_admin.testservice.infrastructure.CreateEasyAccessRepository;
+import site.cleanfree.be_admin.testservice.infrastructure.CreateEasyRepository;
 import site.cleanfree.be_admin.testservice.infrastructure.CreateValueAccessRepository;
 import site.cleanfree.be_admin.testservice.infrastructure.CreateValueRepository;
 import site.cleanfree.be_admin.testservice.infrastructure.CureSilverAccessRepository;
@@ -148,12 +148,15 @@ public class GoogleSheetService {
     public List<ServiceRegisterDto> getRegister() {
         List<CozyHouse> cozyHouses = cozyHouseRepository.findAll();
         List<Visa> visas = visaRepository.findAll();
+        List<CarryCabin> carryCabins = carryCabinRepository.findAll();
 
         return List.of(
             ServiceRegisterDto.builder()
                 .service("cosy house")
-                .registrations(cozyHouses.stream().map(cozyHouse ->
-                    RegisterDto.builder()
+                .registrations(cozyHouses.stream()
+                    .filter(cozyHouse -> cozyHouse.getName() != null
+                        && cozyHouse.getPhoneNumber() != null)
+                    .map(cozyHouse -> RegisterDto.builder()
                         .name(cozyHouse.getName())
                         .phoneNumber(cozyHouse.getPhoneNumber())
                         .build()
@@ -161,12 +164,25 @@ public class GoogleSheetService {
                 .build(),
             ServiceRegisterDto.builder()
                 .service("clear visa")
-                .registrations(visas.stream().map(visa ->
-                    RegisterDto.builder()
+                .registrations(visas.stream()
+                    .filter(visa -> visa.getName() != null
+                        && visa.getPhoneNumber() != null)
+                    .map(visa -> RegisterDto.builder()
                         .name(visa.getName())
                         .phoneNumber(visa.getPhoneNumber())
                         .build()
-                ).toList())
+                    ).toList())
+                .build(),
+            ServiceRegisterDto.builder()
+                .service("carry cabin")
+                .registrations(carryCabins.stream()
+                    .filter(cabin -> cabin.getName() != null
+                        && cabin.getEmail() != null)
+                    .map(cabin -> RegisterDto.builder()
+                        .name(cabin.getName())
+                        .phoneNumber(cabin.getEmail())
+                        .build()
+                    ).toList())
                 .build()
         );
     }
